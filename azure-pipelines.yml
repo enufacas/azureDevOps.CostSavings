@@ -1,0 +1,47 @@
+
+trigger:
+- '*'
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: PowerShell@2
+  inputs:
+    filePath: 'cost-savings-pipelines.ps1'
+    pwsh: true
+  env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
+- task: PowerShell@2
+  inputs:
+    filePath: 'cost-savings-license.ps1'
+    pwsh: true
+  env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'Reports'
+    publishLocation: 'Container'
+
+- task: SlackNotification@5
+  inputs:
+    SlackApiToken: '$(SlackToken)'
+    MessageAuthor: 'Azure DevOps'
+    Channel: '#ChannelName'
+    NotificationType: 'UploadFile'
+    UploadFilePath: '$(Build.ArtifactStagingDirectory)/pipelines.md'
+    FileTitle: 'Pipeline Stats'
+    FileComment: 'Your Pipeline Stats'
+
+- task: SlackNotification@5
+  inputs:
+    SlackApiToken: '$(SlackToken)'
+    MessageAuthor: 'Azure DevOps'
+    Channel: '#ChannelName'
+    NotificationType: 'UploadFile'
+    UploadFilePath: '$(Build.ArtifactStagingDirectory)/users.md'
+    FileTitle: 'User Stats'
+    FileComment: 'Your User Stats'
