@@ -30,7 +30,7 @@ steps:
   inputs:
     SlackApiToken: '$(SlackToken)'
     MessageAuthor: 'Azure DevOps'
-    Channel: '#ChannelName'
+    Channel: '@enufacas'
     NotificationType: 'UploadFile'
     UploadFilePath: '$(Build.ArtifactStagingDirectory)/pipelines.md'
     FileTitle: 'Pipeline Stats'
@@ -40,7 +40,7 @@ steps:
   inputs:
     SlackApiToken: '$(SlackToken)'
     MessageAuthor: 'Azure DevOps'
-    Channel: '#ChannelName'
+    Channel: '@enufacas'
     NotificationType: 'UploadFile'
     UploadFilePath: '$(Build.ArtifactStagingDirectory)/users.md'
     FileTitle: 'User Stats'

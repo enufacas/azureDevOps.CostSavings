@@ -1,5 +1,11 @@
 
+#Comment out this section line for local debug. Handle both old and new urls https://fabrikamfiber.visualstudio.com/ and https://dev.azure.com/fabrikamfiber/ 
 $CollectionName = ([System.Uri]$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI).Host.split('.')[-3]
+
+if ($CollectionName -eq 'dev'){
+    $CollectionName = ([System.Uri]$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI).Host.split('/')[-2]
+}
+##########
 
 #Will need to set these for local debug
 #  $CollectionName = ""
