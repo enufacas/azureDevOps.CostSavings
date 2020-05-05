@@ -1,6 +1,6 @@
 
 #Comment out this line for local debug
-$CollectionName = ([System.Uri]$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI).Host.split('.')[-3]
+$CollectionName = $env:SYSTEM_COLLECTIONID	
 ##########
 
 #Will need to set these for local debug
