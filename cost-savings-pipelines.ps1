@@ -3,7 +3,7 @@
 $CollectionName = ([System.Uri]$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI).Host.split('.')[-3]
 
 if ($CollectionName -eq 'dev'){
-    $CollectionName = ([System.Uri]$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI).Host.split('/')[-2]
+    $CollectionName = ([System.Uri]$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI).split('/')[-2]
 }
 ##########
 
