@@ -7,11 +7,9 @@ $CollectionName = ([System.Uri]$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI).Host.spl
 #  $env:BUILD_ARTIFACTSTAGINGDIRECTORY=""
 #END DEBUG SECTION
 
-$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("{0}:{1}" -f $user, $env:SYSTEM_ACCESSTOKEN))
-
 try {
   $url = "https://vsaex.dev.azure.com/$CollectionName/_apis/userentitlements?"
-  $result = Invoke-RestMethod -Uri $url -ContentType "application/json" -Headers @{Authorization = ("Basic {0}" -f $base64AuthInfo) } 
+  $result = Invoke-RestMethod -Uri $url -ContentType "application/json" -Headers @{ Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN"}
   Write-Host "*******************members*********************************"
   $outputFile = "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/users.md"
     

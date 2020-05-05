@@ -1,26 +1,28 @@
 
+#Comment out this line for local debug
 $CollectionName = ([System.Uri]$env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI).Host.split('.')[-3]
-$CompletedByDate = (Get-Date).AddDays(-14).ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'")
+##########
 
 #Will need to set these for local debug
-# $env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI= ""
-# $CollectionName = ""
-# $env:SYSTEM_TEAMPROJECTID = ""
-# $env:SYSTEM_ACCESSTOKEN = ""
-# $env:BUILD_ARTIFACTSTAGINGDIRECTORY=""
+# $env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI= "https://dev.azure.com/eric-smith"
+# $CollectionName = "YourCollectionName"
+# $env:SYSTEM_TEAMPROJECTID = "YourProjectName"
+# $env:SYSTEM_ACCESSTOKEN = "PAT"
+# $env:BUILD_ARTIFACTSTAGINGDIRECTORY="LocalDirectoryForOutput"
 #END DEBUG SECTION
-
-$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("{0}:{1}" -f $user, $env:SYSTEM_ACCESSTOKEN))
 
 Write-Host $CollectionName
 Write-Host $env:SYSTEM_TEAMPROJECTID
 Write-Host $env:SYSTEM_TEAMFOUNDATIONCOLLECTIONURI
 
+#Can change this date to gather more stats 
+$CompletedByDate = (Get-Date).AddDays(-14).ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'")
+
 try {
     $odataPipelines = "_odata/v3.0-preview/Pipelines?"
     $url = "https://analytics.dev.azure.com/$CollectionName/$env:SYSTEM_TEAMPROJECTID/$odataPipelines"
     Write-Debug $url
-    $pipelineResults = Invoke-RestMethod -Uri $url -ContentType "application/json" -Headers @{Authorization = ("Basic {0}" -f $base64AuthInfo) } 
+    $pipelineResults = Invoke-RestMethod -Uri $url -ContentType "application/json" -Headers @{ Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN"}
     Write-Host "*******************pipelines*********************************"
     $outputFile = "$env:BUILD_ARTIFACTSTAGINGDIRECTORY/pipelines.md"
 
@@ -34,7 +36,7 @@ try {
         $odataPipelineRuns = '_odata/v3.0-preview/PipelineRuns?&$filter=PipelineId%20eq%20' + $pipeline.PipelineId + 'and%20CompletedDate%20gt%20' + $CompletedByDate
         $url = "https://analytics.dev.azure.com/$CollectionName/$env:SYSTEM_TEAMPROJECTID/$odataPipelineRuns"
         Write-Host $url
-        $result = Invoke-RestMethod -Uri $url -ContentType "application/json" -Headers @{Authorization = ("Basic {0}" -f $base64AuthInfo) } 
+        $result = Invoke-RestMethod -Uri $url -ContentType "application/json" -Headers @{ Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN"}
         Write-Host "*******************pipelineRuns*********************************"
         
         if ($result.value.Count -gt 1) {
